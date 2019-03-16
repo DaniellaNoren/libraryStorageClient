@@ -1,6 +1,5 @@
 package daniella.iths.se.librarystorageclient.resources;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +19,9 @@ public class Book {
 
     }
 
+    public void setPostedAt(String postedAt){
+        this.postedAt = postedAt;
+    }
     public String getPostedAt(){
         return postedAt;
     }
@@ -28,8 +30,8 @@ public class Book {
         return lastUpdatedAt;
     }
 
-    public void setLastUpdatedAt(Date date){
-        this.lastUpdatedAt = date.toString();
+    public void setLastUpdatedAt(String date){
+        if(date != null)this.lastUpdatedAt = date.toString();
     }
 
     public Book(String title){
@@ -99,6 +101,8 @@ public class Book {
                 ", postedAt='" + postedAt + '\'' +
                 ", lastUpdatedAt='" + lastUpdatedAt + '\'' +
                 ", authors=" + authors +
+                ", returnDate="+returnDate+
+                ", available="+available+
                 '}';
     }
 
