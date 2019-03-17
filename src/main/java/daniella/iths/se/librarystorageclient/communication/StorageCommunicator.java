@@ -1,22 +1,18 @@
 package daniella.iths.se.librarystorageclient.communication;
 
-import daniella.iths.se.librarystorageclient.resources.Author;
-import daniella.iths.se.librarystorageclient.resources.Book;
-import daniella.iths.se.librarystorageclient.resources.BookAttributes;
-import daniella.iths.se.librarystorageclient.resources.ListOfObject;
+import daniella.iths.se.librarystorageclient.resources.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class StorageCommunicator implements BookStorage {
+public class StorageCommunicator implements BookStorage, AuthorStorage {
 
     RestTemplate restTemplate;
 
@@ -58,27 +54,145 @@ public class StorageCommunicator implements BookStorage {
             return responseEntity.getBody();
         }catch(URISyntaxException e){
             e.printStackTrace();
+        }catch(HttpClientErrorException | HttpServerErrorException e){
+            return null;
         }
         return null;
     }
 
     @Override
     public Author getOneAuthor(long id) {
+        ResponseEntity<Author> res;
+        try{
+            res = restTemplate.exchange(new URI("http://localhost:8081/authors/"+id), HttpMethod.GET, null, Author.class);
+            return res.getBody();
+        }catch(URISyntaxException e){
+            e.printStackTrace();
+        }catch(HttpServerErrorException | HttpClientErrorException e){
+            return null;
+        }
+
         return null;
     }
 
     @Override
-    public Book addBook(BookAttributes b) {
+    public Author updateAuthor(long author_id, AuthorAttributes authorAttributes) {
+        RequestEntity<AuthorAttributes> req;
+        ResponseEntity<Author> res;
+        try{
+            req = RequestEntity.put(new URI("http://localhost:8081/authors/"+author_id)).accept(MediaType.APPLICATION_JSON).body(authorAttributes);
+            res = restTemplate.exchange(req, Author.class);
+            return res.getBody();
+
+        }catch(URISyntaxException e){
+
+        }
+
+
+        return null;
+    }
+
+    @Override
+    public Book addBook(BookAttributes bookAttributes) {
         RequestEntity<BookAttributes> req;
         ResponseEntity<Book> responseEntity;
         try {
-            //b.setLastUpdatedAt(new Date().toString());
-           req = RequestEntity.post(new URI("http://localhost:8081/books")).accept(MediaType.APPLICATION_JSON).body(b);
+           req = RequestEntity.post(new URI("http://localhost:8081/books")).accept(MediaType.APPLICATION_JSON).body(bookAttributes);
            responseEntity = restTemplate.exchange(req, Book.class);
            return responseEntity.getBody();
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Book updateBook(long id, BookAttributes b) {
+        RequestEntity<BookAttributes> req;
+        ResponseEntity<Book> res;
+        try{
+            req = RequestEntity.put(new URI("http://localhost:8081/books/"+id)).accept(MediaType.APPLICATION_JSON).body(b);
+            res = restTemplate.exchange(req, Book.class);
+            return res.getBody();
+
+        }catch(URISyntaxException e){
+
+        }
+
+
+        return null;
+    }
+
+    @Override
+    public Author addAuthor(AuthorAttributes authorAttributes) {
+        RequestEntity<AuthorAttributes> req;
+        ResponseEntity<Author> responseEntity;
+        try {
+        req = RequestEntity.post(new URI("http://localhost:8081/authors")).accept(MediaType.APPLICATION_JSON).body(authorAttributes);
+        responseEntity = restTemplate.exchange(req, Author.class);
+        return responseEntity.getBody();
+
+    } catch (URISyntaxException e) {
+        e.printStackTrace();
+    }
+        return null;
+    }
+
+    @Override
+    public String removeAuthor(long author_id) {
+        ResponseEntity<String> res;
+        RequestEntity req;
+        String mes = "";
+        try{
+            req = RequestEntity.delete(new URI("http://localhost:8081/authors/delete/"+author_id)).accept(MediaType.APPLICATION_JSON).build();
+            res = restTemplate.exchange(req, String.class);
+            return mes = res.getBody();
+
+        }catch(URISyntaxException e){
+            e.printStackTrace();
+        }catch(HttpClientErrorException e){
+            return e.toString();
+        }
+        return "Something went wrong";
+    }
+
+    public void removeBook(long id) {
+        ResponseEntity<String> res;
+
+        try{
+            res = restTemplate.exchange(new URI("http://localhost:8081/books/delete/"+id), HttpMethod.DELETE, null, String.class);
+        }catch(URISyntaxException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Book borrowBook(long userId, long id) {
+        RequestEntity<Long> req;
+        ResponseEntity<Book> res;
+        try{
+            req = RequestEntity.put(new URI("http://localhost:8081/books/borrow/"+id)).accept(MediaType.APPLICATION_JSON).body(userId);
+            res = restTemplate.exchange(req, Book.class);
+            return res.getBody();
+        }catch(URISyntaxException e){
+
+        }catch(HttpServerErrorException | HttpClientErrorException e){
+            return null;
+        }
+        return null;
+    }
+
+    @Override
+    public Book returnBook(long id) {
+        ResponseEntity<Book> res;
+        try{
+            res = restTemplate.exchange(new URI("http://localhost:8081/books/return/"+id), HttpMethod.PUT, null, Book.class);
+            return res.getBody();
+        }catch(URISyntaxException e){
+
+        }catch(HttpServerErrorException | HttpClientErrorException e){
+            return null;
         }
         return null;
     }

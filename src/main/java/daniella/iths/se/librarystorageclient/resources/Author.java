@@ -13,15 +13,20 @@ public class Author {
 
     }
 
+    public Author(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
     @Override
     public String toString() {
-        return "Author{" +
-                "author_id=" + author_id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", books=" + books +
-                '}';
+        String aut = "First name: " + firstName + "\n" +
+                    "Last name: " + lastName + "\n" +
+                     "Author ID: " + author_id + "\n";
+                if(books != null)
+                    aut += "Books:\n" + books + "\n";
+
+                return aut;
     }
 
     public Set<Book> getBooks() {

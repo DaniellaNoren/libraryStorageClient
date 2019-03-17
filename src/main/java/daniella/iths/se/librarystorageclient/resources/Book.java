@@ -95,15 +95,17 @@ public class Book {
 
     @Override
     public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", postedAt='" + postedAt + '\'' +
-                ", lastUpdatedAt='" + lastUpdatedAt + '\'' +
-                ", authors=" + authors +
-                ", returnDate="+returnDate+
-                ", available="+available+
-                '}';
+        String book =   "Title: " + title + "\n" +
+                        "Book ID: " + id + "\n" +
+                        "Available: " + available + "\n" +
+                        "User ID: " + user_id + "\n" +
+                        "Return-date: " + returnDate + "\n" +
+                        "Posted at: " + postedAt + "\n" +
+                        "Last updated at: " + lastUpdatedAt + "\n";
+        if(authors != null)
+            book += "Author/s: \n" + authors + "\n";
+
+        return book;
     }
 
 }

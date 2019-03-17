@@ -2,6 +2,7 @@ package daniella.iths.se.librarystorageclient.resources;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class BookAttributes {
@@ -32,5 +33,12 @@ public class BookAttributes {
 
     public void addAuthor(Author author){
         authors.add(author);
+    }
+
+    public void create(){
+        if(this.getAuthors() == null)
+            authors = new HashSet<>();
+        if(this.getTitle() == null)
+            this.title = "Default title";
     }
 }

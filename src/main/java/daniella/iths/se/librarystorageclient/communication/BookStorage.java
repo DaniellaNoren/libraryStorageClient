@@ -10,16 +10,16 @@ public interface BookStorage {
 
     List<Book> getAllBooks();
 
-    List<Author> getAllAuthors();
-
     Book getOneBook(long id);
-
-    Author getOneAuthor(long id);
 
     Book addBook(BookAttributes b);
 
+    Book updateBook(long id, BookAttributes b);
+
+    void removeBook(long id);
 
 
+    Book borrowBook(long userId, long id);
 
-
+    Book returnBook(long id);
 }

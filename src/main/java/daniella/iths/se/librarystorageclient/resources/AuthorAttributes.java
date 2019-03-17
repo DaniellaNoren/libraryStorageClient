@@ -37,6 +37,10 @@ public class AuthorAttributes {
         return books;
     }
 
+    public void addBook(Book b){
+        books.add(b);
+    }
+
     public void setBooks(Set<Book> books) {
         this.books = books;
     }
