@@ -196,4 +196,18 @@ public class StorageCommunicator implements BookStorage, AuthorStorage {
         }
         return null;
     }
+
+    @Override
+    public User getUser(long id) {
+        ResponseEntity<User> res;
+        try{
+            res = restTemplate.exchange(new URI("http://localhost:8081/books/"+id+"/users"), HttpMethod.GET, null, User.class);
+            return res.getBody();
+        }catch(URISyntaxException e){
+
+        }catch(HttpServerErrorException | HttpClientErrorException e){
+            return null;
+        }
+        return null;
+    }
 }

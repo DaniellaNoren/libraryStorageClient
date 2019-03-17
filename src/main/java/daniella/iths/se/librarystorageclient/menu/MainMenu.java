@@ -1,10 +1,7 @@
 package daniella.iths.se.librarystorageclient.menu;
 
 import daniella.iths.se.librarystorageclient.communication.StorageCommunicator;
-import daniella.iths.se.librarystorageclient.resources.Author;
-import daniella.iths.se.librarystorageclient.resources.AuthorAttributes;
-import daniella.iths.se.librarystorageclient.resources.Book;
-import daniella.iths.se.librarystorageclient.resources.BookAttributes;
+import daniella.iths.se.librarystorageclient.resources.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
@@ -22,7 +19,7 @@ public class MainMenu {
 
     static long id;
 
-    public static void main(String[] args) {
+    public static void loadMenus() {
 
         changeAuthor.add(new MenuItem("1. New first name", () -> {
             AuthorAttributes authorAttributes = new AuthorAttributes();
@@ -126,8 +123,13 @@ public class MainMenu {
         menuItems.add(new MenuItem("5. Search with bookID", () -> {
             System.out.println("Enter id: ");
             Book b = storageCommunicator.getOneBook(sc.nextLong());
-            if(b != null)
+
+            if(b != null) {
                 System.out.println(b);
+                User u = storageCommunicator.getUser(b.getId());
+                if (u != null)
+                    System.out.println("User: " + u);
+            }
             else
                 System.out.println("Invalid ID");
         }));
@@ -171,11 +173,15 @@ public class MainMenu {
         menuItems.add(new MenuItem("9. Exit", () -> System.exit(0)));
 
 
-        menuLoop(menuItems);
+
 
 
     }
 
+    public static void main(String[] args) {
+        loadMenus();
+        menuLoop(menuItems);
+    }
     private static void addAuthor() {
         String firstName = "";
         String lastName = "";
